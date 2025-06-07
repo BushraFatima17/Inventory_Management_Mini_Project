@@ -1,0 +1,205 @@
+#include<iostream>
+using namespace std;
+void add_item();
+void sale_item();
+void buy_item();
+void check_stock();
+void delete_node();
+struct node
+{
+	char item_name[20];
+	int item_id;
+	int price_per_item;
+	int qty;
+	node*nptr;
+};
+node*fptr=NULL;
+int main()
+{
+	int x;
+	for(;;)
+	{
+	cout<<"MAIN MENU\n";
+	cout<<"PRESS 1 TO ADD NEW ITEM TO INVENTORY\nPRESS 2 TO SELL INVENTORY ITEM TO BUYER\nPRESS 3 TO BUY INVENTORY ITEM FROM SUPPLIER\nPRESS 4 TO CHECK THE TOTAL STOCK AVALIABLE\nPRESS 5 TO EXIT\n";
+	cout<<"PLEASE ENTER ONE OF THE OPTIONS\n";
+	cin>>x;
+	cout<<endl;
+	if(x==1) 
+	add_item();
+	else if(x==2)
+	sale_item();
+	else if(x==3)
+	buy_item();
+	else if(x==4)
+	check_stock();
+	else if(x==5)
+	exit(0);
+	else
+	cout<<"*PLEASE TRY AGAIN*\nYOU HAVE ENTERED THE WRONG OPTION\n";
+    }
+}
+void add_item()
+{
+	node*ptr=new node;
+	int id;
+	if(fptr==NULL)
+	{
+       	cout<<"ITEM_NAME : ";
+		cin>>ptr->item_name;
+		cout<<"ITEM_ID : ";
+		cin>>ptr->item_id;
+		cout<<"QUANTITY : ";
+		cin>>ptr->qty;
+		cout<<"PRICE_PER_ITEM : ";
+		cin>>ptr->price_per_item;
+		cout<<endl;
+	    ptr->nptr=NULL;
+	    fptr=ptr;
+	}
+	else
+	{
+		node*currentptr=fptr;
+		int flag=0;
+		while(currentptr->nptr!=NULL)
+		{
+		currentptr=currentptr->nptr;
+		}
+		cout<<"ITEM_NAME : ";
+		cin>>ptr->item_name;
+		cout<<"ITEM_ID : ";
+		cin>>ptr->item_id;		
+		cout<<"QUANTITY : ";
+		cin>>ptr->qty;
+		cout<<"PRICE_PER_ITEM : ";
+		cin>>ptr->price_per_item;
+		currentptr->nptr=ptr;
+		ptr->nptr=NULL;
+		currentptr=fptr;
+		do{
+		while(currentptr!=NULL)
+		{
+			if(currentptr->item_id==ptr->item_id&&currentptr!=ptr)
+			{
+				cout<<"ENTER UNIQUE ID : ";
+				cin>>ptr->item_id;
+				cout<<endl;
+				flag=1;
+				break;
+			}
+			if(flag==1)
+			break;
+		currentptr=currentptr->nptr;
+		}
+	}while(flag==0);
+	}
+}
+void check_stock()
+{
+	node*currentptr=fptr;
+	while(currentptr!=NULL)
+	{
+		cout<<"ITEM_NAME : ";
+		cout<<currentptr->item_name;
+		cout<<"\nITEM_ID : ";
+		cout<<currentptr->item_id;
+		cout<<"\nQUANTITY : ";
+		cout<<currentptr->qty;
+		cout<<"\nPRICE_PER_ITEM : ";
+		cout<<currentptr->price_per_item;
+		cout<<endl;
+		currentptr=currentptr->nptr;
+	}
+
+}
+void sale_item()
+{
+	int y,z,price;
+	node*currentptr=fptr;
+	while(currentptr!=NULL)
+	{
+			cout<<"\nITEM_NAME : ";
+		cout<<currentptr->item_name;
+		cout<<"\nITEM_ID : ";
+		cout<<currentptr->item_id;
+		cout<<"\nQUANTITY : ";
+		cout<<currentptr->qty;
+		cout<<"\nPRICE_PER_ITEM : ";
+		cout<<currentptr->price_per_item<<endl;
+		cout<<endl;
+		currentptr=currentptr->nptr;
+	}
+    currentptr=fptr;
+    cout<<"PLEASE ENTER THE ITEM ID YOU WANT TO BUY\n";
+	cin>>y;
+	while(currentptr!=NULL)
+	{
+	if(currentptr->item_id==y)
+	{	
+	cout<<"PLEASE ENTER THE QUANTITY OF THE ITEM YOU WANT TO BUY\n";
+	cin>>z;
+	if(currentptr->qty>=z)
+	{
+	currentptr->qty=currentptr->qty-z;
+	price=currentptr->price_per_item*z;
+	cout<<"THE TOTAL PRICE OF THE ITEMS IS : "<<price<<endl;
+	if(currentptr->qty==0)
+	  {
+	     delete_node();
+	     break;
+      }
+    }
+    break;
+    }
+    else
+   cout<<"THE REQUIRED ITEM IS NOT PRESENT IN THE INVENTORY";
+	currentptr=currentptr->nptr;
+    }
+   
+}
+void buy_item()
+{
+	int y,z;
+	node*currentptr=fptr;
+	currentptr=fptr;
+    cout<<"PLEASE ENTER THE ITEM ID YOU WANT TO BUY FROM SUPPLIER : \n";
+	cin>>y;
+	while(currentptr!=NULL)
+	{
+	if(currentptr->item_id==y)
+	{	
+	cout<<"PLEASE ENTER THE QUANTITY OF THE ITEM YOU WANT TO BUY FROM THE SUPPLIER \n";
+	cin>>z;
+	currentptr->qty=currentptr->qty+z;
+    }
+    else
+   cout<<"THE REQUIRED ITEM IS NOT PRESENT IN THE INVENTORY\nIF YOU WANT TO ADD THIS ITEM IN THE INVENTORY LIST PLEASE PRESS 1\n ";
+	currentptr=currentptr->nptr;
+    }
+}
+void delete_node()
+{
+	
+	node*currentptr=fptr;
+	node*newptr=new node;
+    if(fptr->qty==0)
+    {
+    	newptr=fptr;
+    	fptr=fptr->nptr;
+    	delete newptr;
+	}
+	else
+	{
+	while(currentptr!=NULL)
+	{
+		if(currentptr->nptr->qty==0)
+		{
+			newptr=currentptr->nptr;
+	        currentptr->nptr=currentptr->nptr->nptr;
+	        delete newptr;
+	        break;
+		}
+		currentptr=currentptr->nptr;
+	}		
+
+    }
+}
